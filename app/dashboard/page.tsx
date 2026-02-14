@@ -20,7 +20,6 @@ export default async function Dashboard() {
         <DashboardHeader email={user?.email} />
         <BookmarkList 
         initialBookmarks={bookmarks ?? []} 
-        userId={user!.id}
         />
       </div>
     </div>

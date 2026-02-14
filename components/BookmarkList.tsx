@@ -12,66 +12,55 @@ type Bookmark = Database['public']['Tables']['bookmarks']['Row']
 
 type Props = {
   initialBookmarks: Bookmark[]
+  userId: string
 }
 
-export default function BookmarkList({ initialBookmarks }: Props) {
+export default function BookmarkList({ initialBookmarks, userId }: Props) {
   const supabase = createClient()
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks)
+  const [bookmarks, setBookmarks] = useState(initialBookmarks)
 
   // Listen for changes in the bookmarks table and update the state accordingly
   useEffect(() => {
-    let channel: ReturnType<typeof supabase.channel>
+    const channel = supabase
+      .channel('bookmarks-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookmarks',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            const newBookmark = payload.new as Bookmark
 
-    const setupSubscription = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (!user) return
-
-      channel = supabase
-        .channel('bookmarks-changes')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'bookmarks',
-            filter: `user_id=eq.${user.id}`,
-          },
-          (payload) => {
-            if (payload.eventType === 'INSERT') {
-              const newBookmark = payload.new as Bookmark
-
-              setBookmarks((prev) => {
-                if (prev.some((b) => b.id === newBookmark.id)) {
-                  return prev
-                }
-                return [newBookmark, ...prev]
-              })
-            }
-
-            if (payload.eventType === 'DELETE') {
-              setBookmarks((prev) =>
-                prev.filter((b) => b.id !== payload.old.id)
-              )
-            }
-
-            if (payload.eventType === 'UPDATE') {
-              const updatedBookmark = payload.new as Bookmark
-
-              setBookmarks((prev) =>
-                prev.map((b) =>
-                  b.id === updatedBookmark.id ? updatedBookmark : b
-                )
-              )
-            }
+            setBookmarks((prev) => {
+              if (prev.some((b) => b.id === newBookmark.id)) {
+                return prev
+              }
+              return [newBookmark, ...prev]
+            })
           }
-        )
-        .subscribe()
-    }
 
-    setupSubscription()
+          if (payload.eventType === 'DELETE') {
+            setBookmarks((prev) =>
+              prev.filter((b) => b.id !== payload.old.id)
+            )
+          }
+
+          if (payload.eventType === 'UPDATE') {
+            const updatedBookmark = payload.new as Bookmark
+
+            setBookmarks((prev) =>
+              prev.map((b) =>
+                b.id === updatedBookmark.id ? updatedBookmark : b
+              )
+            )
+          }
+        }
+      )
+      .subscribe()
 
     return () => {
       if (channel) {

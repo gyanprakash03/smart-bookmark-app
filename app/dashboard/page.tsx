@@ -18,7 +18,10 @@ export default async function Dashboard() {
     <div className="min-h-screen bg-linear-to-b from-[#030015] via-[#10053a] to-[#590e64] fixed inset-0">
       <div className="p-8 lg:w-[84%] mx-auto overflow-y-auto h-screen">
         <DashboardHeader email={user?.email} />
-        <BookmarkList initialBookmarks={bookmarks ?? []} />
+        <BookmarkList 
+        initialBookmarks={bookmarks ?? []} 
+        userId={user!.id}
+        />
       </div>
     </div>
   )

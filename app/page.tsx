@@ -59,7 +59,7 @@ export default function HomePage() {
               </CTAButton>
 
               <CTAButton variant="outline">
-                <Link href="https://github.com/" target="_blank" className='flex gap-1.5 items-center'>
+                <Link href="https://github.com/gyanprakash03/smart-bookmark-app" target="_blank" className='flex gap-1.5 items-center'>
                   <span>GitHub</span>
                   <img src='/external-link.svg' alt='github link'/>
                 </Link>

@@ -12,12 +12,11 @@ type Bookmark = Database['public']['Tables']['bookmarks']['Row']
 
 type Props = {
   initialBookmarks: Bookmark[]
-  userId: string
 }
 
-export default function BookmarkList({ initialBookmarks, userId }: Props) {
+export default function BookmarkList({ initialBookmarks }: Props) {
   const supabase = createClient()
-  const [bookmarks, setBookmarks] = useState(initialBookmarks)
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks)
 
   // Listen for changes in the bookmarks table and update the state accordingly
   useEffect(() => {
@@ -29,17 +28,15 @@ export default function BookmarkList({ initialBookmarks, userId }: Props) {
           event: '*',
           schema: 'public',
           table: 'bookmarks',
-          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           if (payload.eventType === 'INSERT') {
-            const newBookmark = payload.new as Bookmark
-
+            // console.log('INSERT EVENT', payload)
             setBookmarks((prev) => {
-              if (prev.some((b) => b.id === newBookmark.id)) {
-                return prev
-              }
-              return [newBookmark, ...prev]
+                if (prev.some((b) => b.id === payload.new.id)) {
+                  return prev
+                }
+                return [payload.new as Bookmark, ...prev]
             })
           }
 
@@ -50,25 +47,22 @@ export default function BookmarkList({ initialBookmarks, userId }: Props) {
           }
 
           if (payload.eventType === 'UPDATE') {
-            const updatedBookmark = payload.new as Bookmark
-
             setBookmarks((prev) =>
               prev.map((b) =>
-                b.id === updatedBookmark.id ? updatedBookmark : b
+                b.id === payload.new.id ? payload.new as Bookmark : b
               )
             )
           }
         }
       )
-      .subscribe()
+      .subscribe((status) => {
+        console.log('Subscription status:', status)
+      })
 
     return () => {
-      if (channel) {
-        supabase.removeChannel(channel)
-      }
+      supabase.removeChannel(channel)
     }
   }, [])
-
 
   return (
     <div className='grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 pt-8 w-full'>

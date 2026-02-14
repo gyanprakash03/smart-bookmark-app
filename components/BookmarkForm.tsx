@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { bookmarkSchema } from '@/lib/validations'
+import CTAButton from './ui/CTAButton'
+import toast from 'react-hot-toast'
 
 export default function BookmarkForm() {
   const supabase = createClient()
@@ -28,6 +30,7 @@ export default function BookmarkForm() {
     const user = response.data.user;
     if (!user) {
         setError('User not authenticated')
+        toast.error('User not authenticated')
         return
     }
 
@@ -41,19 +44,24 @@ export default function BookmarkForm() {
 
     if (error) {
       setError(error.message)
+      toast.error('Failed to add bookmark')
       return
     }
 
+    toast.success('Bookmark added')
     setTitle('')
     setUrl('')
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5 items-center shrink-0 text-white pt-6 lg:pt-0 justify-center">
+
+      <div className='text-2xl'>Create New Bookmark</div>
+
       <input
         type="text"
         placeholder="Title"
-        className="w-full border p-2 rounded"
+        className="w-full border border-white/70 p-2 rounded-xl"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -61,20 +69,20 @@ export default function BookmarkForm() {
       <input
         type="text"
         placeholder="https://example.com"
-        className="w-full border p-2 rounded"
+        className="w-full border border-white/70 p-2 rounded-xl"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <button
-        type="submit"
+      <CTAButton
+        type={'submit'}
         disabled={loading}
-        className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
+        variant="solid"
       >
         {loading ? 'Adding...' : 'Add Bookmark'}
-      </button>
+      </CTAButton>
     </form>
   )
 }

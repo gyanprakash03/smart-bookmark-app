@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import BookmarkItem from './BookmarkItem'
 import BookmarkForm from './BookmarkForm'
 import { Database } from '@/types/database.types'
+import EmptyState from './ui/EmptyState'
 
 type Bookmark =
   Database['public']['Tables']['bookmarks']['Row']
@@ -58,18 +59,22 @@ export default function BookmarkList({ initialBookmarks }: Props) {
   }, [])
 
   return (
-    <div>
+    <div className='grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 pt-8 w-full'>
       <BookmarkForm />
 
-      <div className="mt-6 space-y-4">
-        {bookmarks.map((bookmark) => (
-          <BookmarkItem
-            key={bookmark.id}
-            id={bookmark.id}
-            title={bookmark.title}
-            url={bookmark.url}
-          />
-        ))}
+      <div className="flex flex-wrap gap-4 items-start justify-center lg:justify-end lg:overflow-y-auto lg:h-[70vh] pr-2 scrollbar-custom">
+        {bookmarks.length === 0 ? (
+          <EmptyState />
+        ) : (
+          bookmarks.map((bookmark) => (
+            <BookmarkItem
+              key={bookmark.id}
+              id={bookmark.id}
+              title={bookmark.title}
+              url={bookmark.url}
+            />
+          ))
+        )}
       </div>
     </div>
   )

@@ -57,7 +57,7 @@ export default function BookmarkList({ initialBookmarks }: Props) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, bookmarks, setBookmarks])
+  }, [])
 
   return (
     <div className='grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 pt-8 w-full'>

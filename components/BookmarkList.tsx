@@ -14,52 +14,64 @@ type Props = {
   initialBookmarks: Bookmark[]
 }
 
-export default async function BookmarkList({ initialBookmarks }: Props) {
+export default function BookmarkList({ initialBookmarks }: Props) {
   const supabase = createClient()
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks)
-  const user = await supabase.auth.getUser()
-  const userId = user.data.user?.id
-
 
   // Listen for changes in the bookmarks table and update the state accordingly
   useEffect(() => {
-    const channel = supabase
-      .channel('bookmarks-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookmarks',
-          filter: `user_id=eq.${userId}`,
-        },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            // console.log('INSERT EVENT', payload)
-            setBookmarks((prev) => {
-                if (prev.some((b) => b.id === payload.new.id)) {
+    let channel: ReturnType<typeof supabase.channel>
+
+    const setupSubscription = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) return
+
+      channel = supabase
+        .channel('bookmarks-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'bookmarks',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              const newBookmark = payload.new as Bookmark
+
+              setBookmarks((prev) => {
+                if (prev.some((b) => b.id === newBookmark.id)) {
                   return prev
                 }
-                return [payload.new as Bookmark, ...prev]
-            })
-          }
+                return [newBookmark, ...prev]
+              })
+            }
 
-          if (payload.eventType === 'DELETE') {
-            setBookmarks((prev) =>
-              prev.filter((b) => b.id !== payload.old.id)
-            )
-          }
-
-          if (payload.eventType === 'UPDATE') {
-            setBookmarks((prev) =>
-              prev.map((b) =>
-                b.id === payload.new.id ? payload.new as Bookmark : b
+            if (payload.eventType === 'DELETE') {
+              setBookmarks((prev) =>
+                prev.filter((b) => b.id !== payload.old.id)
               )
-            )
+            }
+
+            if (payload.eventType === 'UPDATE') {
+              const updatedBookmark = payload.new as Bookmark
+
+              setBookmarks((prev) =>
+                prev.map((b) =>
+                  b.id === updatedBookmark.id ? updatedBookmark : b
+                )
+              )
+            }
           }
-        }
-      )
-      .subscribe()
+        )
+        .subscribe()
+    }
+
+    setupSubscription()
 
     return () => {
       if (channel) {
@@ -67,6 +79,7 @@ export default async function BookmarkList({ initialBookmarks }: Props) {
       }
     }
   }, [])
+
 
   return (
     <div className='grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 pt-8 w-full'>

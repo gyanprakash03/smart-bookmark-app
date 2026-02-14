@@ -7,8 +7,8 @@ import BookmarkForm from './BookmarkForm'
 import { Database } from '@/types/database.types'
 import EmptyState from './ui/EmptyState'
 
-type Bookmark =
-  Database['public']['Tables']['bookmarks']['Row']
+// bookmark type based on database schema
+type Bookmark = Database['public']['Tables']['bookmarks']['Row']
 
 type Props = {
   initialBookmarks: Bookmark[]
@@ -18,6 +18,7 @@ export default function BookmarkList({ initialBookmarks }: Props) {
   const supabase = createClient()
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks)
 
+  // Listen for changes in the bookmarks table and update the state accordingly
   useEffect(() => {
     const channel = supabase
       .channel('bookmarks-changes')

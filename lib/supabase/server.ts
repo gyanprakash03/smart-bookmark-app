@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { Database } from '@/types/database.types'
 
+// Server side Supabase client
 export async function createClient() {
   const cookieStore = await cookies()
 

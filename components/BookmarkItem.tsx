@@ -24,6 +24,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
   const [loading, setLoading] = useState(false)
   const [useLetter, setUseLetter] = useState(false)
   
+  // Extract domain from URL for favicon
   const getDomain = (url: string) => {
     try {
       return new URL(url).hostname
@@ -36,6 +37,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
   const firstLetter = title ? title.charAt(0).toUpperCase() : '?'
 
+  // handle delete bookmark
   const handleDelete = async () => {
     setLoading(true)
     setError(null)
@@ -55,6 +57,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
     toast.success('Bookmark deleted')
   }
 
+  // handle update bookmark
   const handleUpdate = async () => {
     setError(null)
 
@@ -85,6 +88,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
   return (
     <BookmarkCard>
 
+      {/* If in editing mode, show input field and buttons, else show bookmark details */}
       {editing ? (
         <div className="flex flex-col gap-5 text-white/60">
           <input
@@ -120,6 +124,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
         <>
           <div className='flex gap-1 justify-center'>
 
+            {/* If the favicon is not available, fallback to showing the first letter of the title */}
             {useLetter ? (
               <div className="w-14 h-14 shrink-0 rounded-lg bg-white flex items-center justify-center text-blue-950 font-semibold text-4xl">
                 {firstLetter}

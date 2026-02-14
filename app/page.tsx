@@ -8,6 +8,7 @@ import Link from 'next/link'
 export default function HomePage() {
   const supabase = createClient()
 
+  // Handle Google Sign-In
   const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',

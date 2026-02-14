@@ -1,5 +1,6 @@
 'use client'
 
+// This component is shown when there are no bookmarks in the database.
 export default function EmptyState() {
   return (
     <div className="w-full flex items-center justify-center my-auto">

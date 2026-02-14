@@ -7,6 +7,7 @@ type Props = {
   className?: string
 }
 
+// Wrapper for shiny text component
 export default function ShinyHeading({
   children,
   className = '',

@@ -3,12 +3,12 @@ import BookmarkList from '@/components/BookmarkList'
 import DashboardHeader from '@/components/DashboardHeader'
 
 export default async function Dashboard() {
-  // await new Promise((resolve) => setTimeout(resolve, 3000))
   const supabase = await createClient()
 
   const response = await supabase.auth.getUser()
   const user = response.data.user
 
+  // fetching bookmarks
   const { data: bookmarks } = await supabase
     .from('bookmarks')
     .select('*')

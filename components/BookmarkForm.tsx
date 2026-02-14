@@ -17,6 +17,7 @@ export default function BookmarkForm() {
     e.preventDefault()
     setError(null)
 
+    // validate input using zod schema
     const result = bookmarkSchema.safeParse({ title, url })
 
     if (!result.success) {

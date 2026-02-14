@@ -20,6 +20,7 @@ export default function CTAButton({
   disabled = false,
 }: CTAButtonProps) {
 
+  // base styles for buttons and its variants
   const base = 'rounded-lg font-medium transition duration-300 cursor-pointer'
 
   const variants = {

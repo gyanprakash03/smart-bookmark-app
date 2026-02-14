@@ -62,7 +62,7 @@ export default function BookmarkList({ initialBookmarks }: Props) {
     <div className='grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6 pt-8 w-full'>
       <BookmarkForm />
 
-      <div className="flex flex-wrap gap-4 items-start justify-center lg:justify-end lg:overflow-y-auto lg:h-[70vh] pr-2 scrollbar-custom">
+      <div className="flex flex-wrap gap-4 content-start items-start justify-center lg:justify-end lg:overflow-y-auto lg:h-[70vh] pr-2 scrollbar-custom">
         {bookmarks.length === 0 ? (
           <EmptyState />
         ) : (

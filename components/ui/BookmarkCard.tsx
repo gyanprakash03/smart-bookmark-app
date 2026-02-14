@@ -11,7 +11,7 @@ export default function BookmarkCard({ children }: Props) {
     <SpotlightCard
       spotlightColor="rgba(180, 180, 180, 0.30)"
       className="custom-spotlight-card bg-white/10 backdrop-blur-sm border border-white/20 
-      shadow-lg pt-4 pb-2"
+      shadow-lg pt-4 pb-2 w-full sm:w-76.25"
     >
       {children}
     </SpotlightCard>

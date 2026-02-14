@@ -3,7 +3,7 @@
 // This component is shown when there are no bookmarks in the database.
 export default function EmptyState() {
   return (
-    <div className="w-full flex items-center justify-center my-auto">
+    <div className="w-full flex items-center justify-center pt-10 lg:pt-45">
         <div className="text-center max-w-sm space-y-6">
 
             <div className="w-16 h-16 mx-auto rounded-2xl bg-white/10 flex items-center justify-center text-3xl">

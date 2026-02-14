@@ -121,7 +121,7 @@ export default function BookmarkItem({ id, title, url }: Props) {
           <div className='flex gap-1 justify-center'>
 
             {useLetter ? (
-              <div className="w-14 h-14 rounded-lg bg-white flex items-center justify-center text-blue-950 font-semibold text-4xl">
+              <div className="w-14 h-14 shrink-0 rounded-lg bg-white flex items-center justify-center text-blue-950 font-semibold text-4xl">
                 {firstLetter}
               </div>
             ) : (

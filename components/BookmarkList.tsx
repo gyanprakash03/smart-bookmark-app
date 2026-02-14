@@ -14,9 +14,12 @@ type Props = {
   initialBookmarks: Bookmark[]
 }
 
-export default function BookmarkList({ initialBookmarks }: Props) {
+export default async function BookmarkList({ initialBookmarks }: Props) {
   const supabase = createClient()
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks)
+  const user = await supabase.auth.getUser()
+  const userId = user.data.user?.id
+
 
   // Listen for changes in the bookmarks table and update the state accordingly
   useEffect(() => {
@@ -28,11 +31,17 @@ export default function BookmarkList({ initialBookmarks }: Props) {
           event: '*',
           schema: 'public',
           table: 'bookmarks',
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
           if (payload.eventType === 'INSERT') {
-            console.log('INSERT EVENT', payload)
-            setBookmarks((prev) => [payload.new as Bookmark, ...prev])
+            // console.log('INSERT EVENT', payload)
+            setBookmarks((prev) => {
+                if (prev.some((b) => b.id === payload.new.id)) {
+                  return prev
+                }
+                return [payload.new as Bookmark, ...prev]
+            })
           }
 
           if (payload.eventType === 'DELETE') {
@@ -50,12 +59,12 @@ export default function BookmarkList({ initialBookmarks }: Props) {
           }
         }
       )
-      .subscribe((status) => {
-        console.log('Subscription status:', status)
-      })
+      .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      if (channel) {
+        supabase.removeChannel(channel)
+      }
     }
   }, [])
 

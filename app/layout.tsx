@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${anta.className} antialiased min-h-screen tracking-wider`}
+        className={`${anta.className} antialiased min-h-screen tracking-wider bg-black`}
       >
         <Toaster
           position="top-center" 

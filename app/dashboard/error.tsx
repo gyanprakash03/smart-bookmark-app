@@ -8,7 +8,7 @@ export default function Error({
   reset: () => void
 }) {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center text-white">
+    <div className="min-h-screen bg-linear-to-b from-[#030015] via-[#10053a] to-[#590e64] flex items-center justify-center text-white">
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-semibold">
           Something went wrong

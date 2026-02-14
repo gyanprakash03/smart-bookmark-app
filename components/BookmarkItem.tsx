@@ -132,9 +132,12 @@ export default function BookmarkItem({ id, title, url }: Props) {
                 onLoad={(e) => {
                   const img = e.currentTarget
 
-                  if (img.naturalWidth < 32) {
+                  if (img.naturalWidth <= 32) {
                     setUseLetter(true)
                   }
+                }}
+                onError={() => {
+                  setUseLetter(true)
                 }}
               />
             )}

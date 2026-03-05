@@ -3,7 +3,7 @@ Smart Bookmark
 
 A modern, real-time bookmark manager built with Next.js, Supabase, and Tailwind CSS.
 
-**Live Link:** [StashMark](https://your-app.vercel.app)
+**Live Link:** [StashMark](https://stashmark.vercel.app/)
     
 
 Tech Stack
